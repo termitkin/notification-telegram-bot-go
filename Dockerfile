@@ -2,8 +2,8 @@ FROM golang:1.18-alpine
 
 WORKDIR /app
 
-COPY ./app/go.mod ./
-COPY ./app/*.go ./
+COPY ./go.mod ./
+COPY ./*.go ./
 
 RUN go build -o /notification-telegram-bot-go
 
