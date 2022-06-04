@@ -26,7 +26,7 @@ func GetReq(url string) {
 }
 
 func BuildQuery(message string) string {
-	var TelegramBotChatId = os.Getenv("TELEGRAM_BOT_CHAT_ID")
+	TelegramBotChatId := os.Getenv("TELEGRAM_BOT_CHAT_ID")
 
 	if len(TelegramBotChatId) == 0 {
 		log.Fatal("Telegram bot chat id not set")
@@ -36,7 +36,7 @@ func BuildQuery(message string) string {
 }
 
 func BuildTelegramAPIUrl(query string) string {
-	var TelegramBotToken = os.Getenv("TELEGRAM_BOT_TOKEN")
+	TelegramBotToken := os.Getenv("TELEGRAM_BOT_TOKEN")
 
 	if len(TelegramBotToken) == 0 {
 		log.Fatal("Telegram bot token not set")
@@ -46,6 +46,14 @@ func BuildTelegramAPIUrl(query string) string {
 }
 
 func requestHandler(res http.ResponseWriter, req *http.Request) {
+	contentType := req.Header.Get("Content-Type")
+
+	if contentType != "text/plain" {
+		fmt.Println(contentType)
+
+		return
+	}
+
 	body, err := ioutil.ReadAll(req.Body)
 
 	if err != nil {
