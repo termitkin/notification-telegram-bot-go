@@ -3,11 +3,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"net/url"
-	"os"
 	"strings"
+
+	"github.com/notification-telegram-bot-go/app/url"
 )
 
 func sendMessage(url string) {
@@ -20,30 +19,6 @@ func sendMessage(url string) {
 		fmt.Printf("URL: %s\n", url)
 		fmt.Println(err)
 	}
-}
-
-func getUrlQuery(message string) string {
-	TelegramBotChatId := os.Getenv("TELEGRAM_BOT_CHAT_ID")
-
-	if len(TelegramBotChatId) == 0 {
-		log.Fatal("Telegram bot chat id not set")
-	}
-
-	query := url.Values{}
-	query.Add("chat_id", TelegramBotChatId)
-	query.Add("text", message)
-
-	return query.Encode()
-}
-
-func getUrl(query string) string {
-	TelegramBotToken := os.Getenv("TELEGRAM_BOT_TOKEN")
-
-	if len(TelegramBotToken) == 0 {
-		log.Fatal("Telegram bot token not set")
-	}
-
-	return fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage?%s", TelegramBotToken, query)
 }
 
 func requestHandler(res http.ResponseWriter, req *http.Request) {
@@ -66,8 +41,8 @@ func requestHandler(res http.ResponseWriter, req *http.Request) {
 	text := string(body)
 
 	if len(text) > 0 {
-		query := getUrlQuery(text)
-		url := getUrl(query)
+		query := url.GetUrlQuery(text)
+		url := url.GetUrl(query)
 
 		sendMessage(url)
 
