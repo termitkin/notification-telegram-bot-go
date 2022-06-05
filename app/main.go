@@ -10,29 +10,33 @@ import (
 	"strings"
 )
 
-func GetReq(url string) {
+func sendMessage(url string) {
 	res, err := http.Get(url)
 
 	if err == nil {
 		defer res.Body.Close()
 	} else {
-		fmt.Println("Get request not sent")
-		fmt.Printf("URL: %s", url)
+		fmt.Printf("Get request not sent\n")
+		fmt.Printf("URL: %s\n", url)
 		fmt.Println(err)
 	}
 }
 
-func BuildQuery(message string) string {
+func getUrlQuery(message string) string {
 	TelegramBotChatId := os.Getenv("TELEGRAM_BOT_CHAT_ID")
 
 	if len(TelegramBotChatId) == 0 {
 		log.Fatal("Telegram bot chat id not set")
 	}
 
-	return fmt.Sprintf("chat_id=%s&text=%s", url.QueryEscape(TelegramBotChatId), url.QueryEscape(message))
+	query := url.Values{}
+	query.Add("chat_id", TelegramBotChatId)
+	query.Add("text", message)
+
+	return query.Encode()
 }
 
-func BuildTelegramAPIUrl(query string) string {
+func getUrl(query string) string {
 	TelegramBotToken := os.Getenv("TELEGRAM_BOT_TOKEN")
 
 	if len(TelegramBotToken) == 0 {
@@ -55,15 +59,17 @@ func requestHandler(res http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		fmt.Println("Body not read")
+
+		return
 	}
 
 	text := string(body)
 
 	if len(text) > 0 {
-		query := BuildQuery(text)
-		url := BuildTelegramAPIUrl(query)
+		query := getUrlQuery(text)
+		url := getUrl(query)
 
-		GetReq(url)
+		sendMessage(url)
 
 		_, err := res.Write([]byte("ok"))
 
