@@ -2,27 +2,24 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 )
 
 func GetReq(url string) {
 	res, err := http.Get(url)
 
-	if err != nil {
+	if err == nil {
+		defer res.Body.Close()
+	} else {
 		fmt.Println("Get request not sent")
+		fmt.Printf("URL: %s", url)
+		fmt.Println(err)
 	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-
-		if err != nil {
-			fmt.Println("Body not closed")
-		}
-	}(res.Body)
 }
 
 func BuildQuery(message string) string {
@@ -32,7 +29,7 @@ func BuildQuery(message string) string {
 		log.Fatal("Telegram bot chat id not set")
 	}
 
-	return fmt.Sprintf("chat_id=%s&text=%s", TelegramBotChatId, message)
+	return fmt.Sprintf("chat_id=%s&text=%s", url.QueryEscape(TelegramBotChatId), url.QueryEscape(message))
 }
 
 func BuildTelegramAPIUrl(query string) string {
@@ -48,8 +45,8 @@ func BuildTelegramAPIUrl(query string) string {
 func requestHandler(res http.ResponseWriter, req *http.Request) {
 	contentType := req.Header.Get("Content-Type")
 
-	if contentType != "text/plain" {
-		fmt.Println(contentType)
+	if !strings.Contains(contentType, "text/plain") {
+		fmt.Print(contentType)
 
 		return
 	}
