@@ -6,20 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/notification-telegram-bot-go/app/url"
+	"github.com/termitkin/notification-telegram-bot-go/app/message"
+	"github.com/termitkin/notification-telegram-bot-go/app/url"
 )
-
-func sendMessage(url string) {
-	res, err := http.Get(url)
-
-	if err == nil {
-		defer res.Body.Close()
-	} else {
-		fmt.Printf("Get request not sent\n")
-		fmt.Printf("URL: %s\n", url)
-		fmt.Println(err)
-	}
-}
 
 func requestHandler(res http.ResponseWriter, req *http.Request) {
 	contentType := req.Header.Get("Content-Type")
@@ -44,7 +33,7 @@ func requestHandler(res http.ResponseWriter, req *http.Request) {
 		query := url.GetUrlQuery(text)
 		url := url.GetUrl(query)
 
-		sendMessage(url)
+		message.SendMessage(url)
 
 		_, err := res.Write([]byte("ok"))
 
