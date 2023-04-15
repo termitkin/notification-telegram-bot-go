@@ -16,9 +16,6 @@ services:
     restart: unless-stopped
     ports:
       - "5533:8080"
-    environment:
-      - TELEGRAM_BOT_TOKEN
-      - TELEGRAM_BOT_CHAT_ID
     env_file:
       - .env
 ```
