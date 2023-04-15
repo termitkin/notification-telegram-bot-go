@@ -22,26 +22,28 @@ func requestHandler(res http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 
 	if err != nil {
-		fmt.Println("Body not read")
+		fmt.Println(err)
 
 		return
 	}
 
 	text := string(body)
 
-	if len(text) > 0 {
-		query := url.GetUrlQuery(text)
-		url := url.GetUrl(query)
-
-		message.SendMessage(url)
-
-		_, err := res.Write([]byte("ok"))
-
-		if err != nil {
-			fmt.Println("Response not sent")
-		}
-	} else {
+	if len(text) == 0 {
 		fmt.Println("Body is empty")
+
+		return
+	}
+
+	query := url.GetUrlQuery(text)
+	url := url.GetUrl(query)
+
+	message.SendMessage(url)
+
+	_, err2 := res.Write([]byte("ok"))
+
+	if err2 != nil {
+		fmt.Println("Response not sent")
 	}
 }
 

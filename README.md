@@ -1,10 +1,10 @@
-## notification-telegram-bot-go
+# notification-telegram-bot-go
 
 The program accepts the text in the body and sends it to the telegram chat
 
 [Docker image](https://hub.docker.com/r/termitkin/notification-telegram-bot-go)
 
-### Example of docker-compose.yml
+## Example of docker-compose.yml
 
 ```yml
 version: "3.8"
@@ -23,14 +23,14 @@ services:
       - .env
 ```
 
-### Example of .env
+## Example of .env
 
 ```dotenv
 TELEGRAM_BOT_TOKEN=token
 TELEGRAM_BOT_CHAT_ID=chatId
 ```
 
-### Example of nginx block
+## Example of nginx block
 
 ```nginx
 # Notification to telegram
@@ -44,14 +44,13 @@ location ^~ /notification-to-telegram/bot-token {
 }
 ```
 
-
-### Docker build
+## Docker build
 
 ```bash
 docker build -t termitkin/notification-telegram-bot-go:latest .
 ```
 
-### Run docker container
+## Run docker container
 
 ```bash
 docker pull termitkin/notification-telegram-bot-go:latest && docker-compose up -d
